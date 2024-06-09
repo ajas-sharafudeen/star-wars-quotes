@@ -14,15 +14,16 @@ MongoClient.connect(uri, ({ useUnifiedTopology: true }))
 
     // Make sure you place body-parser before your CRUD handlers!
     app.use(bodyParser.urlencoded({ extended: true }))
+    app.use(express.static('public'))
     app.get('/', (req, res) => {
       quotesCollection
         .find()
         .toArray()
         .then(results => {
+          res.render('index.ejs', { quotes: results })
           console.log(results)
         })
         .catch(error => console.log(error))
-      res.render('index.ejs', {})
     })
     app.post('/quotes', (req, res) => {
       quotesCollection
