@@ -21,7 +21,6 @@ MongoClient.connect(uri, ({ useUnifiedTopology: true }))
         .toArray()
         .then(results => {
           res.render('index.ejs', { quotes: results })
-          console.log(results)
         })
         .catch(error => console.log(error))
     })
@@ -32,6 +31,10 @@ MongoClient.connect(uri, ({ useUnifiedTopology: true }))
           res.redirect('/')
         })
         .catch(error => console.log(error))
+    })
+    app.use(bodyParser.json())
+    app.put('/quotes', (req, res) => {
+      console.log(req.body)
     })
     app.listen(PORT, () => {
       console.log(`Listening on PORT ${PORT}`);
