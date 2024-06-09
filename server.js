@@ -15,6 +15,8 @@ MongoClient.connect(uri, ({ useUnifiedTopology: true }))
     // Make sure you place body-parser before your CRUD handlers!
     app.use(bodyParser.urlencoded({ extended: true }))
     app.use(express.static('public'))
+    app.use(bodyParser.json())
+
     app.get('/', (req, res) => {
       quotesCollection
         .find()
@@ -32,9 +34,23 @@ MongoClient.connect(uri, ({ useUnifiedTopology: true }))
         })
         .catch(error => console.log(error))
     })
-    app.use(bodyParser.json())
     app.put('/quotes', (req, res) => {
-      console.log(req.body)
+      quotesCollection
+        .findOneAndUpdate(
+          { name: 'Yoda' },
+          {
+            $set: {
+              name: req.body.name,
+              quote: req.body.quote,
+            },
+          },
+          {
+            upsert: true,
+          })
+        .then(result => {
+          res.json('Success')
+        })
+        .catch(error => console.error(error))
     })
     app.listen(PORT, () => {
       console.log(`Listening on PORT ${PORT}`);
